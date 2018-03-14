@@ -7,6 +7,7 @@ import com.laurens.hexcmd.read.HexCmdReceiver;
 import com.laurens.hexcmd.read.PacketListener;
 import com.laurens.hexcmd.read.readers.DynamicDataReader;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 
@@ -83,7 +84,11 @@ public class PacketReader implements PacketListener
                         new Date(reader.getLong('D'))), reader.getBytes('B'));
                 break;
             case 6:
-                listener.onOnlineUserListResponse(reader.getString('M').split("\n"));
+                try {
+                    listener.onOnlineUserListResponse(reader.getString('M').split("\n"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 break;
             case 7:
                 listener.onOnlineUserListRequest();
@@ -95,5 +100,11 @@ public class PacketReader implements PacketListener
     public void onFailure(DataReader dataReader)
     {
         listener.onCorrupt();
+    }
+
+    @Override
+    public void onDisconnect(boolean graceful)
+    {
+        listener.onDisconnect();
     }
 }

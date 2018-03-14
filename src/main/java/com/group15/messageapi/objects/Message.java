@@ -41,6 +41,10 @@ public class Message
         this.timestamp = new Date();//now
     }
 
+    public void setUser(String user)
+    {
+        this.user = user;
+    }
 
     /**
      * Get the type of this message

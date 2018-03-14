@@ -7,6 +7,7 @@ import com.laurens.hexcmd.write.HexCmdTransmitter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.ArrayList;
 
 /**
  * Sends messaging packets by encoding them through HexCommand. <br>
@@ -110,10 +111,34 @@ public class PacketWriter
      * @param usernames the usernames of users currently online
      * @throws IOException on network errors
      */
-    public synchronized void sendOnlineUserList(String[] usernames)throws IOException
+    public synchronized void sendOnlineUserList(ArrayList<String> usernames)throws IOException
     {
         transmitter.sendByte('T', 6);
         transmitter.sendString('M', String.join("\n", usernames));
+        transmitter.endPacket();
+    }
+
+    /**
+     * Send a login accept packet to the client.
+     * @throws IOException on network errors
+     */
+    public synchronized void sendAck()throws IOException
+    {
+        transmitter.sendByte('T', 0);
+        transmitter.sendByte('A', 1);
+        transmitter.endPacket();
+    }
+
+    /**
+     * Send a login denied packet to the client. Also used to kick a user currently active in the chat for some reason.
+     * @param errorMsg A user readable reason for being denied access
+     * @throws IOException on network errors
+     */
+    public synchronized void sendNack(String errorMsg)throws IOException
+    {
+        transmitter.sendByte('T', 0);
+        transmitter.sendByte('A', 0);
+        transmitter.sendString('M', errorMsg);
         transmitter.endPacket();
     }
 }

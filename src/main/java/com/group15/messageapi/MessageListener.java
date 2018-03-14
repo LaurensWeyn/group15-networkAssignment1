@@ -3,6 +3,9 @@ package com.group15.messageapi;
 import com.group15.messageapi.objects.FileTransfer;
 import com.group15.messageapi.objects.Message;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 /**
  * A listener for chat messages.
  * Server-side implementation note: Note that calls to these functions do not include information about the client.
@@ -62,11 +65,19 @@ public interface MessageListener
      * Called when the server sends a list of online users (client-side only)
      * @param users an array of users currently online
      */
-    void onOnlineUserListResponse(String[] users);
+    void onOnlineUserListResponse(String[] users) throws IOException;
 
     /**
      * Called when a client requests the list of active users (server-side only)
      */
     void onOnlineUserListRequest();
+
+    /**
+     * Called when the connection is lost, either in error or intentionally. <br>
+     * Servers should remove the client from the client list on disconnect.<br>
+     * For clients, this is always an error condition as the server should never kill the connection
+     * (except after sending the client a NAK, see {@link MessageListener#onFail(String)})
+     */
+    void onDisconnect();
 }
 
