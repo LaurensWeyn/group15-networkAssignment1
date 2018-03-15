@@ -197,14 +197,14 @@ public class ClientHandler implements MessageListener
     }
 
     @Override
-    public void onDisconnect() {  //TODO this is actually not getting called packetDisconnect
+    public void onDisconnect() {
 
+        parentServer.getClientList().remove(this);
         try {
             packetWriter.sendMessage(new Message(serverMessage,username + " left the chatroom\n" ));
         } catch (IOException e) {
             e.printStackTrace();
         }
-        parentServer.getClientList().remove(this);
         try {
             this.socket.close();
         } catch (IOException e) {
