@@ -2,6 +2,7 @@ package com.group15.messageapi;
 
 import com.group15.messageapi.objects.FileTransfer;
 import com.group15.messageapi.objects.Message;
+import com.group15.server.Server;
 import com.laurens.hexcmd.write.HexCmdTransmitter;
 
 import java.io.IOException;
@@ -140,5 +141,19 @@ public class PacketWriter
         transmitter.sendByte('A', 0);
         transmitter.sendString('M', errorMsg);
         transmitter.endPacket();
+    }
+
+    public void sendFileTransferAvailable(FileTransfer fileTransfer)throws IOException
+    {
+        transmitter.sendByte('T', 3);
+        transmitter.sendString('M', fileTransfer.getFilename());
+        transmitter.sendLong('S', fileTransfer.getLength());
+        transmitter.sendInt('I', fileTransfer.getId());
+        transmitter.sendLong('D', fileTransfer.getTimestamp().getTime());
+        transmitter.sendString('U', fileTransfer.getUsername());
+    }
+
+    public void disconnect() throws IOException {
+        transmitter.close();
     }
 }

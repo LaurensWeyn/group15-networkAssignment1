@@ -1,5 +1,6 @@
 package com.group15.server;
 
+import com.group15.client.GUI;
 import com.group15.messageapi.MessageListener;
 import com.group15.messageapi.PacketReader;
 import com.group15.messageapi.PacketWriter;
@@ -10,7 +11,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ClientHandler extends Thread implements MessageListener
+import static com.group15.messageapi.objects.Message.MsgType.serverMessage;
+import static com.group15.messageapi.objects.Message.MsgType.userMessage;
+
+public class ClientHandler implements MessageListener
 {
     private Socket socket;
     private PacketReader packetReader;
@@ -24,8 +28,7 @@ public class ClientHandler extends Thread implements MessageListener
         this.parentServer = parentServer;
     }
 
-    @Override
-    public void run()
+    public void init()
     {
         try
         {
@@ -46,6 +49,15 @@ public class ClientHandler extends Thread implements MessageListener
         }
     }
 
+    public void sendMessage(FileTransfer fileTransfer)
+    {
+        try {
+            packetWriter.sendFileTransferAvailable(fileTransfer);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onMessage(Message msg)
     {
@@ -53,7 +65,7 @@ public class ClientHandler extends Thread implements MessageListener
             try {
                 packetWriter.sendNack("Cannot send messages without being logged in.");
                 socket.close();
-                Server.clientList.remove(this);
+                parentServer.getClientList().remove(this);
                 return;
             } catch (IOException e) {
                 e.printStackTrace();
@@ -68,7 +80,7 @@ public class ClientHandler extends Thread implements MessageListener
     public void onFail(String error)
     {
         //server cannot log into client
-        Server.clientList.remove(this);
+        parentServer.getClientList().remove(this);
         username = null;
     }
 
@@ -84,7 +96,7 @@ public class ClientHandler extends Thread implements MessageListener
         //inform that the message is gabbage
         try {
             packetWriter.sendNack("Invalid packet");
-            Server.clientList.remove(this);
+            parentServer.getClientList().remove(this);
             socket.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,41 +107,72 @@ public class ClientHandler extends Thread implements MessageListener
     public void onLoginRequest(String username, String password)
     {
         this.username = username;
-        //TODO check if username isn't taken
+        int found = 0;
+
+
+
+        for (ClientHandler check: parentServer.clientList)
+        {
+            if (check.username.equals(username)){ found++;}
+
+        }
+
+
+        if (found == 1) {
+            try {
+                packetWriter.sendNack("Username is taken, please try again");
+            } catch (IOException e) {
+                e.printStackTrace();
+
+            }}
+            else{
         try
-        { packetWriter.sendAck();
+        {
+            packetWriter.sendAck();
+            parentServer.clientList.add(this);
             parentServer.broadcast(new Message(Message.MsgType.serverMessage, username + " has joined the chatroom!"));
         } catch (IOException e)
+        {
+            e.printStackTrace();
+        }}
+    }
+
+    @Override
+    public void onFileTransferAvailable(FileTransfer fileTransfer)
+    {
+        //server never gets this
+    }
+
+    @Override
+    public void onFileTransferRequest(int fileID)
+    {
+        //send file to client
+        try
+        {
+            FileTransfer fileTransfer = parentServer.getFile(fileID);
+            packetWriter.transferFile(fileTransfer);
+        }catch(IOException | IndexOutOfBoundsException err)
+        {
+            err.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onFileTransfer(FileTransfer transfer, byte[] data)
+    {
+        try
+        {
+            transfer.setUsername(username);//remember who sent this
+            parentServer.storeFile(transfer, data);
+        } catch(IOException e)
         {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onFileTransferAvailable(FileTransfer fileTransfer)
-    {
-
-    }
-
-    @Override
-    public void onFileTransferRequest(int fileID)
-    {
-      //clients want to download the file
-
-    }
-
-    //TODO create "database" via a hashmap if ids and file transfer metadata, ids are assigned by the server.
-    @Override
-    public void onFileTransfer(FileTransfer transfer, byte[] data)
-    {
-
-    }
-
-    @Override
     public void onOnlineUserListResponse(String[] users) {
-      //what clients get
-
-
+        //server never gets this
     }
 
     public String getUsername() {
@@ -139,9 +182,11 @@ public class ClientHandler extends Thread implements MessageListener
     @Override
     public void onOnlineUserListRequest()
     {
+        if(username == null)
+            return;
         ArrayList<String> users = new ArrayList<>();
          //what clients will send to the server
-        for (ClientHandler client: Server.clientList){
+        for (ClientHandler client: parentServer.getClientList()){
             users.add(client.getUsername());
         }
         try {
@@ -152,7 +197,20 @@ public class ClientHandler extends Thread implements MessageListener
     }
 
     @Override
-    public void onDisconnect() {
-        Server.clientList.remove(this);
+    public void onDisconnect() {  //TODO this is actually not getting called packetDisconnect
+
+        try {
+            packetWriter.sendMessage(new Message(serverMessage,username + " left the chatroom\n" ));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        parentServer.getClientList().remove(this);
+        try {
+            this.socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 }

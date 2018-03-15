@@ -1,5 +1,7 @@
 package com.group15.messageapi.objects;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -18,6 +20,7 @@ public class Message
         this.text = text;
         this.user = user;
         this.timestamp = timestamp;
+
     }
 
     public Message(MsgType msgType, String text, String user)
@@ -92,7 +95,12 @@ public class Message
     @Override
     public String toString()
     {
-        String string = timestamp + " ";
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(timestamp);
+        SimpleDateFormat ft = new SimpleDateFormat ("E dd/MM hh:mm");
+
+        String string = "[" + ft.format(timestamp) + "]" + " ";
         switch(msgType)
         {
             case serverMessage:
@@ -108,7 +116,7 @@ public class Message
         return string;
     }
 
-    public enum MsgType
+    public  enum MsgType
     {
         userMessage,
         userAction,

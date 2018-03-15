@@ -75,10 +75,11 @@
             <scope>test</scope>
         </dependency>
         <!--Chat protocol-->
-        <dependency>
+        <!--Note: dependency now internal-->
+        <!--<dependency>
             <groupId>com.laurens</groupId>
             <artifactId>hexcmd</artifactId>
             <version>1.0-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
     </dependencies>
 </project>

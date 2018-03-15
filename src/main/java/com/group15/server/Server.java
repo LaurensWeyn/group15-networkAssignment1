@@ -1,36 +1,59 @@
 package com.group15.server;
 
+import com.group15.messageapi.objects.FileTransfer;
 import com.group15.messageapi.objects.Message;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 public class Server extends Thread
 {
-    static ArrayList<ClientHandler> clientList = new ArrayList<>();
-    static Message msg;
+    ArrayList<ClientHandler> clientList = new ArrayList<>();
+    public static ArrayList<ClientHandler> copy = new ArrayList<>();
+    private File storageFolder;
+    private ArrayList<FileTransfer> fileDB;
+
+    public Server(File storageFolder)
+    {
+        super();
+        this.storageFolder = storageFolder;
+        if(storageFolder.exists())
+        {
+            if(!storageFolder.isDirectory())
+                throw new IllegalStateException("storage folder not a directory");
+            System.out.println("Cleaning up old file transfers...");
+            for(File file : storageFolder.listFiles())
+                file.delete();
+        }
+        else
+            storageFolder.mkdirs();
+    }
+
     @Override
     public void run()
     {
         try
-        {
+        {   copy = clientList;
             ServerSocket socket = new ServerSocket(1024);
             while (true)
             {
                 Socket connection = socket.accept();
                 ClientHandler newClient = new ClientHandler(this, connection);
-                clientList.add(newClient);
-                newClient.start();
+                newClient.init();
             }
         }catch (IOException err)
         {
             err.printStackTrace();
         }
+    }
 
-
-
+    public ArrayList<ClientHandler> getClientList()
+    {
+        return clientList;
     }
 
     public void broadcast(Message msg)
@@ -40,9 +63,32 @@ public class Server extends Thread
             client.sendMessage(msg);
         }
     }
+    public void broadcast(FileTransfer msg)
+    {
+        //broadcasting message to all clients
+        for (ClientHandler client:clientList) {
+            client.sendMessage(msg);
+        }
+    }
+
+    public synchronized void storeFile(FileTransfer fileTransfer, byte[] data) throws IOException
+    {
+        fileTransfer.setId(fileDB.size());//assign ID based on position in database
+        fileTransfer.setFile(new File(storageFolder, fileTransfer.getId() + ".bin"));//assign actual file in system
+        fileDB.add(fileTransfer);//add file info to database
+        Files.write(fileTransfer.getFile().toPath(), data);//store data in filesystem
+        broadcast(fileTransfer);//announce to clients file is available
+    }
+
+    public FileTransfer getFile(int id)
+    {
+        return fileDB.get(id);
+    }
+
+
 
     public static void main(String[] args)
     {
-        new Server().start();
+        new Server(new File("sharedFiles")).start();
     }
 }
