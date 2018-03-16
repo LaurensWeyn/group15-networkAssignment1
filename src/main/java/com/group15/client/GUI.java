@@ -25,6 +25,7 @@ import java.awt.event.*;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.Socket;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -172,7 +173,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                             try {
                                 int close = holder.indexOf("}");
                                 holder = holder.substring((close+2),holder.length()-1);
-                                packetWriter.sendMessage(new Message(userMessage,holder,users));
+                                packetWriter.sendMessage(new Message(userMessage,holder,users));  //TODO server side for directed msgs
                             } catch (IOException e1) {
                                 e1.printStackTrace();
                             } }
@@ -204,16 +205,21 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
 
 
-                            JFileChooser fc = new JFileChooser();
+                            JFileChooser fc = new JFileChooser();    //TODO limit file size
                             int box = fc.showOpenDialog(null);
                             if ( box == JFileChooser.APPROVE_OPTION) {
                                 File file = fc.getSelectedFile();
                                 //String sname = file.getAbsolutePath(); //THIS WAS THE PROBLEM
                                // image = new JLabel("", new ImageIcon(sname), JLabel.CENTER);
-                                df.sendFile(username, file);
+                                FileTransfer w = new FileTransfer(file, username);
+                                //df.sendFile(w);
+                                try {
+                                    packetWriter.transferFile(w);
+                                } catch (IOException e1) {
+                                    e1.printStackTrace();
+                                }
 
-
-                                 //ADD THIS AS WELL
+                                //ADD THIS AS WELL
 
                         }
                     }       
@@ -246,7 +252,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         
         
 	// The CenterPanel which is the chat room
-	txtArea = new JTextArea("Welcome to Let's Chat!\n", 10, 20);
+	txtArea = new JTextArea("Welcome to Let's Chat!\n", 10, 20); //TODO JEditorPane, random color  for each user
            /* {
 		Image image =new ImageIcon("/Users/winfredamazvidza/Desktop/chatProgram 2/src/main/java/com/group15/happy/Pictures/vintage.jpg").getImage();// imageIcon.getImage();
                 Image grayImage = GrayFilter.createDisabledImage(image);
@@ -282,7 +288,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                             e1.printStackTrace();
                         }
 
-                        df = new DisplayFiles();
+                        df = new DisplayFiles(packetWriter);
                         userNametxt.setDisabledTextColor(Color.gray);
                         online.setEnabled(true);
                         logout.setEnabled(true);
@@ -539,18 +545,36 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     @Override
     public void onFileTransferAvailable(FileTransfer fileTransfer)
     {
-
+        System.out.println("notified of " + fileTransfer);
+        df.sendFile(fileTransfer);
+        //announce new file to UI
+        onMessage(new Message(serverMessage, fileTransfer + " is now available", "", fileTransfer.getTimestamp()));
     }
 
     @Override
     public void onFileTransferRequest(int fileID)
     {
         //clients want to download the file
+        //server
 
     }
     @Override
     public void onFileTransfer(FileTransfer transfer, byte[] data)
     {
+        System.out.println("transferring " + transfer);
+        SwingUtilities.invokeLater(() -> {
+            JFileChooser chooser = new JFileChooser();//TODO jFilechooser save with extension
+            chooser.setDialogTitle("Save file from " + transfer.getUsername());
+
+            chooser.showSaveDialog(null);
+            File chosen = chooser.getSelectedFile();
+            System.out.println("writing file");
+            try {
+                Files.write(chosen.toPath(), data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
 
     }
     @Override
@@ -617,7 +641,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                 OpenScreen.setVisible(false);
                 GUI client = null;
                 try {
-                    client = new GUI(name,new Socket("localhost", 1024));
+                    client = new GUI(name,new Socket("localhost", 1024)); //TODO textbox for user to enter IP add for the server
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

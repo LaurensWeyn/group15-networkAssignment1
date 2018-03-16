@@ -1,5 +1,8 @@
 package com.group15.client;
 
+import com.group15.messageapi.PacketWriter;
+import com.group15.messageapi.objects.FileTransfer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -32,7 +35,7 @@ public class DisplayFiles extends JFrame {
     Map<String, File> collection = new HashMap<String, File>();
 
 
-    public DisplayFiles() throws HeadlessException {
+    public DisplayFiles(PacketWriter packetWriter) throws HeadlessException {
 
         setVisible(false);
         setTitle("Images for downloading...");
@@ -68,8 +71,12 @@ public class DisplayFiles extends JFrame {
         {
             public void actionPerformed(ActionEvent e)
             {
-               int A =  jlst.getSelectedIndex(); //TODO send for downloaing
-
+                FileTransfer fileTransfer = (FileTransfer)jlst.getSelectedValue();
+                try {
+                    packetWriter.requestFileTransfer(fileTransfer);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
 
             }
         });
@@ -80,19 +87,15 @@ public class DisplayFiles extends JFrame {
 
     }
 
-    public void sendFile(String username, File file){
+    public void sendFile(FileTransfer file){
 
-       // lbl.setBounds(10,10,670,250);
-      //  lbl.setIcon(ResizeImage(path));
-       //lbl jlst.add(path);
-
-        String path = file.getAbsolutePath();
-        String name = file.getName();
+       // String path = file.getAbsolutePath();
+        //String name = file.getName();
 
         int pos = jlst.getModel().getSize();
         model.add(pos, file);
 
-        collection.put(username,file);   //TODO file is to be sent to other users.
+       // collection.put(username,file);   //TODO file is to be sent to other users.
 
         jPanel.revalidate(); //ADD THIS AS WELL
         jPanel.repaint();

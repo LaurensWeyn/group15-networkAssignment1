@@ -37,6 +37,15 @@ public class FileTransfer
 
     }
 
+    public FileTransfer(File file, String username)
+    {
+        this.file = file;
+        this.filename = file.getName();
+        this.length = file.length();
+        timestamp = new Date();//current time
+        this.username = username;
+    }
+
     public String getFilename()
     {
         return filename;
@@ -95,5 +104,10 @@ public class FileTransfer
     public void setUsername(String username)
     {
         this.username = username;
+    }
+
+    @Override
+    public String toString() {
+        return filename + " from " + username + " (" + (length / 1024) + "KB)";
     }
 }

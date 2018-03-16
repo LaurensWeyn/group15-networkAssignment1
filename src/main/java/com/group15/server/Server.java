@@ -15,7 +15,7 @@ public class Server extends Thread
     ArrayList<ClientHandler> clientList = new ArrayList<>();
     public static ArrayList<ClientHandler> copy = new ArrayList<>();
     private File storageFolder;
-    private ArrayList<FileTransfer> fileDB;
+    private ArrayList<FileTransfer> fileDB = new ArrayList<>();
 
     public Server(File storageFolder)
     {
@@ -67,6 +67,7 @@ public class Server extends Thread
     {
         //broadcasting message to all clients
         for (ClientHandler client:clientList) {
+            System.out.println("broadcast file to " + client);
             client.sendMessage(msg);
         }
     }
@@ -78,6 +79,7 @@ public class Server extends Thread
         fileDB.add(fileTransfer);//add file info to database
         Files.write(fileTransfer.getFile().toPath(), data);//store data in filesystem
         broadcast(fileTransfer);//announce to clients file is available
+        System.out.println(fileTransfer + " stored and announced");
     }
 
     public FileTransfer getFile(int id)

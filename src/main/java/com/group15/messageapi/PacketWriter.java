@@ -90,6 +90,7 @@ public class PacketWriter
     public synchronized void transferFile(FileTransfer fileTransfer) throws IOException
     {
         transmitter.sendByte('T', 5);
+        transmitter.sendString('M', fileTransfer.getFilename());
         transmitter.sendLong('S', fileTransfer.getLength());
         byte[] data = Files.readAllBytes(fileTransfer.getFile().toPath());
         transmitter.sendBytes('B', data);
@@ -145,12 +146,14 @@ public class PacketWriter
 
     public void sendFileTransferAvailable(FileTransfer fileTransfer)throws IOException
     {
+        System.out.println("transmit code 3");
         transmitter.sendByte('T', 3);
         transmitter.sendString('M', fileTransfer.getFilename());
         transmitter.sendLong('S', fileTransfer.getLength());
         transmitter.sendInt('I', fileTransfer.getId());
         transmitter.sendLong('D', fileTransfer.getTimestamp().getTime());
         transmitter.sendString('U', fileTransfer.getUsername());
+        transmitter.endPacket();
     }
 
     public void disconnect() throws IOException {
