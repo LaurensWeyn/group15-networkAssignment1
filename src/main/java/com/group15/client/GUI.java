@@ -630,6 +630,20 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         userNametxt.setBackground(Color.pink);
         userNametxt.requestFocus();
 
+        JLabel serverIP = new JLabel("Server IP: ");
+        serverIP.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
+        serverIP.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+        JTextField serverIPtxt = new JTextField("localhost");  //TODO how which one should we place ad default
+        serverIPtxt.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+        serverIPtxt.setBackground(Color.pink);
+        serverIPtxt.requestFocus();
+
+
+        middle.add(userNamelbl, "left");//moved
+        middle.add(userNametxt, "left");//moved
+
+        middle.add(serverIP, "right");
+        middle.add(serverIPtxt, "right");
 
         login = new JButton("Log In");
         login.addActionListener(new ActionListener()
@@ -641,7 +655,8 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                 OpenScreen.setVisible(false);
                 GUI client = null;
                 try {
-                    client = new GUI(name,new Socket("localhost", 1024)); //TODO textbox for user to enter IP add for the server
+                   // client = new GUI(name,new Socket("localhost", 1024)); //TODO textbox for user to enter IP add for the server
+                    client = new GUI(name,new Socket(serverIPtxt.getText(), 1024)); //TODO textbox for user to enter IP add for the server
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
