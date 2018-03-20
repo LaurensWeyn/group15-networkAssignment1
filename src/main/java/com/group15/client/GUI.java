@@ -205,19 +205,25 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
 
 
-                            JFileChooser fc = new JFileChooser();    //TODO limit file size
-                            int box = fc.showOpenDialog(null);
-                            if ( box == JFileChooser.APPROVE_OPTION) {
-                                File file = fc.getSelectedFile();
-                                //String sname = file.getAbsolutePath(); //THIS WAS THE PROBLEM
-                               // image = new JLabel("", new ImageIcon(sname), JLabel.CENTER);
+                            JFileChooser fc = new JFileChooser();    //Todo limit file size - DONE
+                        int box = fc.showOpenDialog(null);
+                        if ( box == JFileChooser.APPROVE_OPTION) {
+                            File file = fc.getSelectedFile();
+                            if(file.length() > 2000000){
+                                JOptionPane.showMessageDialog(null, "Sorry, file too big" + "\n");
+
+
+                            }
+                            else{
+                                //txtArea.append("File " + file.getName() + " sent successfully! " +"\n");
                                 FileTransfer w = new FileTransfer(file, username);
-                                //df.sendFile(w);
+                                df.sendFile(w);
                                 try {
                                     packetWriter.transferFile(w);
                                 } catch (IOException e1) {
                                     e1.printStackTrace();
                                 }
+                            }
 
                                 //ADD THIS AS WELL
 
@@ -358,12 +364,14 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                     e1.printStackTrace();
                                 }
 
+                                dispose();
+
 
                             }
                             else {
                                  System.out.println("No Option");
                                  }
-                                 dispose();
+
                     }
             });
             logout.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
