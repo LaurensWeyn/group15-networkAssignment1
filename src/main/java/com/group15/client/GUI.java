@@ -228,6 +228,8 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                 //ADD THIS AS WELL
 
                         }
+
+                        listButton.doClick();
                     }       
                     /*JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
                     int returnValue = jfc.showOpenDialog(null);
