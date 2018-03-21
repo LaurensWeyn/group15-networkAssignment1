@@ -69,7 +69,6 @@ public class PacketReader implements PacketListener
                         new Date(reader.getLong('D'))));
             break;
             case 3:
-                System.out.println("recieve case 3");
                 listener.onFileTransferAvailable(new FileTransfer(reader.getString('M'),
                         reader.getLong('S'),
                         reader.getInt('I'),

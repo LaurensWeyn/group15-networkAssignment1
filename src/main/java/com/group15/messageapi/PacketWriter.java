@@ -146,7 +146,6 @@ public class PacketWriter
 
     public void sendFileTransferAvailable(FileTransfer fileTransfer)throws IOException
     {
-        System.out.println("transmit code 3");
         transmitter.sendByte('T', 3);
         transmitter.sendString('M', fileTransfer.getFilename());
         transmitter.sendLong('S', fileTransfer.getLength());

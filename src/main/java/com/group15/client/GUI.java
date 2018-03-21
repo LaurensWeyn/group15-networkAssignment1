@@ -555,7 +555,6 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     @Override
     public void onFileTransferAvailable(FileTransfer fileTransfer)
     {
-        System.out.println("notified of " + fileTransfer);
         df.sendFile(fileTransfer);
         //announce new file to UI
         onMessage(new Message(serverMessage, fileTransfer + " is now available", "", fileTransfer.getTimestamp()));
@@ -571,14 +570,12 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     @Override
     public void onFileTransfer(FileTransfer transfer, byte[] data)
     {
-        System.out.println("transferring " + transfer);
         SwingUtilities.invokeLater(() -> {
             JFileChooser chooser = new JFileChooser();//TODO jFilechooser save with extension
             chooser.setDialogTitle("Save file from " + transfer.getUsername());
 
             chooser.showSaveDialog(null);
             File chosen = chooser.getSelectedFile();
-            System.out.println("writing file");
             try {
                 Files.write(chosen.toPath(), data);
             } catch (IOException e) {

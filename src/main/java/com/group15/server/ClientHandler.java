@@ -71,8 +71,21 @@ public class ClientHandler implements MessageListener
                 e.printStackTrace();
             }
         }
-        msg.setUser(username);
-        parentServer.broadcast(msg);
+        if(msg.getUser().equals("") || msg.getUser() == null)
+        {
+            //global message
+            msg.setUser(username);
+            parentServer.broadcast(msg);
+        }
+        else
+        {
+            //private message: extract all recipients
+            String[] toUsers = msg.getUser().split(",");
+            for(int i = 0; i < toUsers.length; i++)
+                toUsers[i] = toUsers[i].trim();//trim all
+            msg.setUser(username);
+            parentServer.sendTo(toUsers, msg);
+        }
 
     }
 
