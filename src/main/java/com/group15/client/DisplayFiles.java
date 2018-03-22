@@ -95,7 +95,7 @@ public class DisplayFiles extends JFrame {
         int pos = jlst.getModel().getSize();
         model.add(pos, file);
 
-       // collection.put(username,file);   //TODO file is to be sent to other users.
+
 
         jPanel.revalidate(); //ADD THIS AS WELL
         jPanel.repaint();

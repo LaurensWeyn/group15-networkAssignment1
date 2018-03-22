@@ -289,7 +289,6 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                 public void actionPerformed(ActionEvent e)
                     {  
                         //Checking if another user is making use of the same username
-                        //String name = userNametxt.getText();
                         try {
                             packetWriter.login(username);
                         } catch (IOException e1) {
@@ -303,42 +302,10 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                         listButton.setEnabled(true);
                         clearButton.setEnabled(true);
                         start.setEnabled(false);
-
-
-                        /*try {
-                            packetWriter.sendMessage(new Message(Message.MsgType.serverMessage,  username+ " joined the chat room!\n"));
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }*/
-
-                       // userNametxt.enableInputMethods(false);
                         userNametxt.setEnabled(false);
 
 
 
-                        /*Boolean check = isValid(name);
-                            if (check != false)
-                            {
-                                //Checking if Connection has beed extablished
-                                Boolean logInCheck = ConnectionCheck();
-                                    if (logInCheck==true)
-                                    {
-                                        online.setEnabled(true);
-                                        logout.setEnabled(true);
-                                        txtArea.append(name+ " joined the chat room!\n");
-                                        login.setEnabled(false);
-                                        userNametxt.setText(name);
-                                    }
-                                    else
-                                    {      
-                                        JOptionPane.showMessageDialog(null, "Sorry, connection failed.\n Please try again.\n" + getonlineUsers());
-                                    } 
-                            }
-                            else 
-                            {
-                                JOptionPane.showMessageDialog(null, "Sorry, username taken\n Please try again.\n" + getonlineUsers());
-                                userNametxt.setText("");
-                            }*/
                     }
             });
         start.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
@@ -359,6 +326,13 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                 listButton.setEnabled(false);
                                 start.setEnabled(true);
                                 clearButton.setEnabled(false);
+                                String hold = new String (username+" has left the chatroom");
+                                try {
+                                    packetWriter.sendMessage(new Message(userMessage,hold));  //TODO server side for directed msgs
+                                } catch (IOException e1) {
+                                    e1.printStackTrace();
+                                }
+
                                 try {
 
                                     packetWriter.disconnect();
@@ -367,8 +341,6 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                 }
 
                                 dispose();
-
-
                             }
                             else {
                                  System.out.println("No Option");
