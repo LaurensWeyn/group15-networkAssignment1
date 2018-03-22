@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+This is the client and their user interface.
  */
 package com.group15.client;
 
@@ -31,76 +29,62 @@ import static java.awt.Color.orange;
 
 public class GUI extends JFrame implements ActionListener, MessageListener {
 
-    //Attributes
+    /*
+        Attributes
+    */
     private JLabel userNamelbl;
     private JTextField addTxt, portTxt, sendtxt, userNametxt;
-    private JButton start, logout, online, sendButton, attachButton, clearButton, listButton;
+    private JButton start, logoutButton, onlineButton, sendButton, attachButton, clearButton, listButton;
     private JTextArea txtArea;
-    private int onlineNum = 5; //**To be replaced with actual number
-    private ArrayList<String> onlineList = new ArrayList<String>() ;//**Array with all the people online to be added
-    private PacketWriter packetWriter; //This is for the client
-    private PacketReader packetReader; //This is for the client
+    private ArrayList<String> onlineList = new ArrayList<String>() ;/*Array with all the people onlineButton to be added*/
+    private PacketWriter packetWriter; /*This is for the client*/
+    private PacketReader packetReader; /*This is for the client*/
     private String username;
-
-    JLabel image;
-    DisplayFiles df;
+    private DisplayFiles df;
 
 
 
 
-    //Constructor
+    /*Constructor*/
     GUI(String name, Socket socket)
-
 	{
         super("Chat Room");
         try
         { packetWriter = new PacketWriter(socket.getOutputStream());
             packetReader = new PacketReader(socket.getInputStream(), this); }
-
             catch (IOException err){err.printStackTrace(); }
             this.username = name;
-            JPanel topPanel = new JPanel(new BorderLayout()); //top half
-	        topPanel.setBorder(new EmptyBorder(5,0,5,0));
-            topPanel.setBackground(Color.black);
-	        JPanel topPanelPanel=new JPanel(new GridLayout(0,1));
-	        topPanelPanel.setBackground(Color.orange);
+
+        /*Settting up the interface*/
+
+            JPanel row1 = new JPanel(new BorderLayout());
+	        row1.setBorder(new EmptyBorder(5,0,5,0));
+            row1.setBackground(Color.black);
+	        JPanel row1Panel=new JPanel(new GridLayout(0,1));
+	        row1Panel.setBackground(Color.orange);
             JLabel l=new JLabel(new ImageIcon("src/main/java/com/group15/client/Pictures/LetsChat.jpg"));
 	        l.setBorder(new EmptyBorder(5,5,5,5));
-
-
-
-	    topPanel.add(l,"North");
-      
+	        row1.add(l,"North");
 
         JPanel row2 = new JPanel();
         JPanel row3 = new JPanel(new BorderLayout());
-      
-
         row2.setBackground(Color.orange);
+        row1Panel.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
 
+	    userNamelbl = new JLabel("Username: ", SwingConstants.LEFT);
+	    userNamelbl.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
+	    userNamelbl.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
 
-
-
-
-	// adds the ip address an port field to the GUI
-
-	topPanelPanel.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
-	// the Label and the TextField
-      
-	userNamelbl = new JLabel("Username: ", SwingConstants.LEFT);
-	userNamelbl.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
-	userNamelbl.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-	//topPanelPanel.add(userNamelbl); 
             
-	userNametxt = new JTextField(username);
-	userNametxt.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
-	userNametxt.setBackground(Color.pink);
-	topPanelPanel.add(userNametxt);
-      
+	    userNametxt = new JTextField(username);
+	    userNametxt.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
+	    userNametxt.setBackground(Color.pink);
+
+	    row1Panel.add(userNametxt);
         row2.add(userNamelbl);
         row2.add(userNametxt);
-        topPanelPanel.add(row2);
-        topPanelPanel.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
+        row1Panel.add(row2);
+        row1Panel.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
         
       
         sendButton = new JButton(new ImageIcon("src/main/java/com/group15/client/Pictures/arrow.png"));
@@ -109,6 +93,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
             {
                 public void actionPerformed(ActionEvent e)
                     {
+                        /*Checking if message sent is a private message or public message*/
                         String holder = sendtxt.getText();
                         String open = new String("{") ;
                         String users = new String("");
@@ -129,7 +114,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
                         if (limited == true)
                         {
-                            try {
+                            try { /*If private message use contructor with users*/
                                 int close = holder.indexOf("}");
                                 holder = holder.substring((close+2),holder.length()-1);
                                 packetWriter.sendMessage(new Message(userMessage,holder,users));
@@ -137,9 +122,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                 e1.printStackTrace();
                             } }
                         else{
-                            try {
-                               // int close = holder.indexOf("}");
-                              //  System.out.println(holder = holder.substring((close+2),holder.length()));
+                            try {/*If public message use contsructor which sends to all users*/
                                 packetWriter.sendMessage(new Message(userMessage,holder));
                             } catch (IOException e1) {
                                 e1.printStackTrace();
@@ -156,25 +139,17 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     
             public void actionPerformed(ActionEvent e)
                     {
-                        /*JFileChooser fileChooser = new JFileChooser();
-                        fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
-                        int result = fileChooser.showOpenDialog(null);
-                        if (result == JFileChooser.APPROVE_OPTION) {
-                           File selectedFile = fileChooser.getSelectedFile();*/
-
-
-
                             JFileChooser fc = new JFileChooser();
                         int box = fc.showOpenDialog(null);
                         if ( box == JFileChooser.APPROVE_OPTION) {
                             File file = fc.getSelectedFile();
-                            if(file.length() > 2000000){
+                            if(file.length() > 2000000){ /*Checking of the file chossen is the correct size*/
                                 JOptionPane.showMessageDialog(null, "Sorry, file too big" + "\n");
 
 
                             }
                             else{
-                                //txtArea.append("File " + file.getName() + " sent successfully! " +"\n");
+                                /*File transmission sent successfully! " +"\n");*/
                                 FileTransfer w = new FileTransfer(file, username);
                                 try {
                                     packetWriter.transferFile(w);
@@ -183,54 +158,37 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                 }
                             }
 
-                                //ADD THIS AS WELL
-
                         }
 
                         listButton.doClick();
-                    }       
-                    /*JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-                    int returnValue = jfc.showOpenDialog(null);
-                    if (returnValue == JFileChooser.APPROVE_OPTION) {
-			File selectedFile = jfc.getSelectedFile();
-			System.out.println(selectedFile.getAbsolutePath());
-                        
-                    */ 
-                    
-		   
-            
-            
+                    }
         });
-        
-      
-        //sendButton.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
+
         sendtxt = new JTextField("type....");
         sendtxt.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-	sendtxt.setBackground(Color.pink);
+	    sendtxt.setBackground(Color.pink);
+
+        sendtxt.addActionListener(new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                String text = sendtxt.getText();  /*when user clicks enter on the keyboard to send a message*/
+                sendButton.doClick();
+            }
+        });
 
 
 	row3.add(sendtxt);        
-        row3.add(sendButton,BorderLayout.EAST);
-        row3.add(attachButton,BorderLayout.WEST);
+	row3.add(sendButton,BorderLayout.EAST);
+	row3.add(attachButton,BorderLayout.WEST);
             
-        topPanel.add(topPanelPanel, BorderLayout.SOUTH);
-	add(topPanel, BorderLayout.NORTH);
+	row1.add(row1Panel, BorderLayout.SOUTH);
+	add(row1, BorderLayout.NORTH);
         
         
-	// The CenterPanel which is the chat room
+	/*The text area for messages to be displayed for users*/
 	txtArea = new JTextArea("Welcome to Let's Chat!\n", 10, 20);
-           /* {
-		Image image =new ImageIcon("/Users/winfredamazvidza/Desktop/chatProgram 2/src/main/java/com/group15/happy/Pictures/vintage.jpg").getImage();// imageIcon.getImage();
-                Image grayImage = GrayFilter.createDisabledImage(image);
-                    {
-                        setOpaque(false);
-                    }
-                public void paint(Graphics g) 
-                {	  
-                    g.drawImage(grayImage, 0, 0,getWidth(),getHeight(), this);
-                    super.paint(g);
-		}};*/
-           txtArea.setBackground(Color.lightGray);
+	txtArea.setBackground(Color.lightGray);
 	JPanel centerPanel = new JPanel(new GridLayout(1,1));
 	centerPanel.add(new JScrollPane(txtArea));
 	txtArea.setEditable(false);
@@ -240,8 +198,8 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 	txtArea.setWrapStyleWord(true);
 	add(centerPanel, BorderLayout.CENTER);
 
-	// log in button
-	start = new JButton("start");
+	/*Shows the user is online*/
+	start = new JButton("* online");
 	start.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
@@ -255,45 +213,42 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
                         df = new DisplayFiles(packetWriter);
                         userNametxt.setDisabledTextColor(Color.gray);
-                        online.setEnabled(true);
-                        logout.setEnabled(true);
+                        onlineButton.setEnabled(true);
+                        logoutButton.setEnabled(true);
                         listButton.setEnabled(true);
                         clearButton.setEnabled(true);
                         start.setEnabled(false);
                         userNametxt.setEnabled(false);
-
-
-
                     }
             });
         start.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
 
 
-        // logout button
-	logout = new JButton("Log Out");
-	logout.addActionListener(new ActionListener()
+
+	logoutButton = new JButton("Log Out");
+	logoutButton.addActionListener(new ActionListener()
             {
                 public void actionPerformed(ActionEvent e)
                     {
                         int dialogButton = JOptionPane.YES_NO_OPTION;
+                        /*CHecking if user has not clicked log out by mistake*/
                         int dialogResult = JOptionPane.showConfirmDialog(null, "Are you sure you want to leave the chatroom?", "Chatroom", dialogButton);
                             if(dialogResult == 0) {
                                 System.out.println("Yes option");
-                                online.setEnabled(false);
-                                logout.setEnabled(false);
+                                onlineButton.setEnabled(false); /*disable buttons*/
+                                logoutButton.setEnabled(false);
                                 listButton.setEnabled(false);
                                 start.setEnabled(true);
                                 clearButton.setEnabled(false);
                                 String hold = new String (username+" has left the chatroom");
                                 try {
-                                    packetWriter.sendMessage(new Message(userMessage,hold));
+                                    packetWriter.sendMessage(new Message(userMessage,hold)); /*tell server to boradcast the user is leaving the chatroom*/
                                 } catch (IOException e1) {
                                     e1.printStackTrace();
                                 }
 
                                 try {
-
-                                    packetWriter.disconnect();
+                                    packetWriter.disconnect();  /* disconnecting the user*/
                                 } catch (IOException e1) {
                                     e1.printStackTrace();
                                 }
@@ -302,20 +257,20 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                             }
 
                             else {
-                                 System.out.println("No Option");
+                                 System.out.println("No Option"); /*user does not want to exit*/
                                  }
 
                     }
             });
-            logout.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-            logout.setEnabled(false);		// you have to login before being able to logout
+            logoutButton.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+            logoutButton.setEnabled(false);
 
-            online = new JButton("Online");
-            online.addActionListener(new ActionListener()
+            onlineButton = new JButton("Online Users");
+            onlineButton.addActionListener(new ActionListener()
                 {
                     public void actionPerformed(ActionEvent e)
                         {
-                            //JOptionPane.showMessageDialog(null, "There " + onlineNum+" people in the chat room: \n" + getonlineUsers());
+
                             try {
                                 packetWriter.requestOnlineUsers();
                             } catch (IOException e1) {
@@ -323,22 +278,20 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                             }
                         }
                 });  
-            online.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-            online.setEnabled(false);		// you have to login before being able to know online
-                                                // text to know the number of people online
+            onlineButton.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
+            onlineButton.setEnabled(false);
             JPanel bottomPanel = new JPanel(new GridLayout(1,0));
-            //    bottomPanel.add(row3,new GridLayout());
 
-        clearButton = new JButton("Clear");
+
+        clearButton = new JButton("Clear"); /*clears the screen*/
         clearButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
             { txtArea.setText("");
-            }
-        });
+            }});
 
 
-        listButton = new JButton("List");
+        listButton = new JButton("File List");
         listButton.addActionListener(new ActionListener()
         {
             public void actionPerformed(ActionEvent e)
@@ -347,77 +300,47 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         });
 
             clearButton.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-            clearButton.setEnabled(false);		// you have to login before being able to logout
+            clearButton.setEnabled(false);
             listButton.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
-            listButton.setEnabled(false);		// you have to login before being able to logout
+            listButton.setEnabled(false);
+
            bottomPanel.add(start);
-           bottomPanel.add(online);
-           bottomPanel.add(logout);
+           bottomPanel.add(onlineButton);
+           bottomPanel.add(logoutButton);
            bottomPanel.add(clearButton);
            bottomPanel.add(listButton);
 
-     
-		//add(bottomPanel, BorderLayout.SOUTH);
-		//bottomPanel.setBackground(Color.orange);
       
-           JPanel CavePanel = new JPanel(new BorderLayout());
-           CavePanel.setBorder(new EmptyBorder(5,0,5,0));
-           CavePanel.setBackground(Color.black);
-           CavePanel.add(row3,"North");
-           CavePanel.add(bottomPanel, BorderLayout.SOUTH);
+           JPanel BigPanel = new JPanel(new BorderLayout());
+           BigPanel.setBorder(new EmptyBorder(5,0,5,0));
+           BigPanel.setBackground(Color.black);
+           BigPanel.add(row3,"North");
+           BigPanel.add(bottomPanel, BorderLayout.SOUTH);
            setPreferredSize(new Dimension(600, 700));
            pack();
-        //setLocationRelativeTo(null);
-        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice defaultScreen = ge.getDefaultScreenDevice();
+
+        GraphicsEnvironment graphicsE = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice defaultScreen = graphicsE.getDefaultScreenDevice();
         Rectangle rect = defaultScreen.getDefaultConfiguration().getBounds();
         int x = (int) rect.getMaxX() - getWidth();
         int y = 0;
-        setLocation(x-600, 50);
+        setLocation(x-600, 50);  /*Positioning the window in the center when it's opened*/
 
 
-        add(CavePanel, BorderLayout.SOUTH);
+        add(BigPanel, BorderLayout.SOUTH);  /*adding items to the bottom pane/*/
         row3.setBackground(Color.orange);
         bottomPanel.setBackground(Color.orange);
-		
-           setDefaultCloseOperation(EXIT_ON_CLOSE);
-           //setSize(600, 700);
-           setVisible(true);
-           userNametxt.requestFocus();
-           sendtxt.requestFocus();
-           start.doClick();
 
-            }
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-    private Boolean ConnectionCheck(){
-        Boolean logInCheck = true; //** to be changed
-        return logInCheck;
-    }
-    
-    //Action Performed
+        setVisible(true);
+        userNametxt.requestFocus();
+        sendtxt.requestFocus();
+        start.doClick();
+
+            } /*End of constructor*/
+
     public void actionPerformed(ActionEvent e) {}
-
-    private String getonlineUsers(){
-        String onlineUsers = new String("");
-        String newName = new String("");
-            for (String i:onlineList) {
-                newName = i + "\n";
-                onlineUsers = onlineUsers + newName;
-            }
-        return onlineUsers;
-    }
- 
-    private Boolean isValid (String name){
-     Boolean check = true;  
-        if (onlineList.isEmpty() ==false){
-            for (String i:onlineList) {
-                if (i.toLowerCase().equals(name.toLowerCase())) //compared in lowercase
-                    {check = false;}
-            }
-        }
-       onlineList.add(name); //Append List
-       return check;
-    }
 
     /**
      *
@@ -426,9 +349,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
     @Override
     public void onLoginRequest(String username, String password)
-    {
-
-    }
+    { /*to be implemented by the server*/ }
 
     @Override
 
@@ -436,24 +357,13 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     {
 
         SwingUtilities.invokeLater(() ->{
-
-
                     txtArea.append(msg.toString()+"\n");
-
-
-
-
-
-        });
-
-
-    }
+        }); }
 
     @Override
     public void onFail(String error)
     {
-        //txtArea.append(error);
-        //onFail("Corrupt message from server \n");
+
         SwingUtilities.invokeLater(() ->{ JOptionPane.showMessageDialog(null, error);
         String[] t = new String[2];
             try {
@@ -474,7 +384,6 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     {
         JOptionPane.showMessageDialog(null, "Successful connection!");
 
-
     }
 
     @Override
@@ -487,17 +396,19 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     public void onFileTransferAvailable(FileTransfer fileTransfer)
     {
         df.sendFile(fileTransfer);
-        //announce new file to UI
+        /*announce new file to UI*/
         onMessage(new Message(serverMessage, fileTransfer + " is now available", "", fileTransfer.getTimestamp()));
     }
 
     @Override
     public void onFileTransferRequest(int fileID)
     {
-        //clients want to download the file
-        //server
+        /*clients want to download the file
+        //server*/
 
     }
+
+    /*for file transgers*/
     @Override
     public void onFileTransfer(FileTransfer transfer, byte[] data)
     {
@@ -522,19 +433,20 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     @Override
     public void onOnlineUserListRequest()
     {
-         //for server
+         /*for server*/
     }
 
     @Override
     public void onDisconnect() {
-        //for the server
+        /*for the server*/
     }
 
+    /*showing the list of the users onlie after getting it from the server*/
     @Override
     public void onOnlineUserListResponse(String[]users) throws IOException {
         SwingUtilities.invokeLater(() ->{
-        String Multiple = new String("There are " + users.length + " people in the online: \n");
-        String Single = new String("You are the only user online.\n");
+        String Multiple = new String("There are " + users.length + " people in the onlineButton: \n");
+        String Single = new String("You are the only user onlineButton.\n");
 
         if (users.length ==1)
         {
@@ -550,12 +462,14 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     }
 
 
-    //Running Instructions for now
 
+/*When GUI is run
+*
+*
+* */
     public static void main(String[] args) throws IOException {
 
-
-       // GUI client = new GUI(new Socket("localhost", 12050));
+        /*setting up gui*/
        JFrame OpenScreen = new JFrame("Chat Room: Log In");
         JButton login;
         JPanel upper = new JPanel();
@@ -577,15 +491,14 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         JLabel serverIP = new JLabel("Server IP: ");
         serverIP.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
         serverIP.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-        JTextField serverIPtxt = new JTextField("localhost");  //TODO how which one should we place ad default
+        JTextField serverIPtxt = new JTextField("localhost");  
         serverIPtxt.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
         serverIPtxt.setBackground(Color.pink);
         serverIPtxt.requestFocus();
 
 
-        middle.add(userNamelbl, "left");//moved
-        middle.add(userNametxt, "left");//moved
-
+        middle.add(userNamelbl, "left");
+        middle.add(userNametxt, "left");
         middle.add(serverIP, "right");
         middle.add(serverIPtxt, "right");
 
@@ -595,21 +508,22 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
             public void actionPerformed(ActionEvent e)
             {
                 String name = userNametxt.getText();
-                userNametxt.setDisabledTextColor(Color.gray);
+                userNametxt.setDisabledTextColor(Color.gray);  /*user cannot change their username now*/
                 OpenScreen.setVisible(false);
                 GUI client = null;
                 try {
-                   // client = new GUI(name,new Socket("localhost", 12050));
-                    client = new GUI(name,new Socket(serverIPtxt.getText(), 12050));
+                    client = new GUI(name,new Socket(serverIPtxt.getText(), 12050)); /*Our port number for users*/
                 } catch (IOException e1) {
+
                     e1.printStackTrace();
                 }
-                client.setVisible(true);
+                client.setVisible(true); /*user oly gets access tot he GUI if the log in is successful*/
 
             }
         });
         login.setFont(new Font("Comic Sans MS", Font.BOLD, 15));
 
+        /*setting up the interface*/
         middle.add(userNamelbl);
         middle.add(userNametxt);
         lower.add(login);
@@ -623,7 +537,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         OpenScreen.add(middle,"Center");
         OpenScreen.add(lower,"South");
         OpenScreen.setVisible(true);
-        userNametxt.requestFocus();
+        serverIPtxt.requestFocus(); /*for the user to edit*/
 
 
     }
