@@ -635,7 +635,9 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         userNamelbl.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
         userNamelbl.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
 
-        JTextField userNametxt = new JTextField("Anonymous");  //TODO 1-1000
+
+        String randomUsername = "Anonymous" + (int)(Math.random() * 1000.0);
+        JTextField userNametxt = new JTextField(randomUsername);
         userNametxt.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
         userNametxt.setBackground(Color.pink);
         userNametxt.requestFocus();
