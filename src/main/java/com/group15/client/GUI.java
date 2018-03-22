@@ -78,7 +78,6 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
 
 
-
 	    topPanel.add(l,"North");
       
 
@@ -87,40 +86,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
       
 
         row2.setBackground(Color.orange);
-		
-	/*
 
-	JPanel row1 = new JPanel();
-	row1.setBackground(Color.orange);
-
-	addTxt = new JTextField(socket.gethost);
-	addTxt.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
-	addTxt.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
-        addTxt.setBackground(Color.pink);
-
-	portTxt = new JTextField("" + port);
-	portTxt.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
-	portTxt.setFont(new Font("Comic Sans MS", Font.PLAIN, 20));
-        portTxt.setBackground(Color.pink);
-	portTxt.setHorizontalAlignment(SwingConstants.RIGHT)
-      
-	JLabel addLbl=new JLabel("IP Address:  ");
-	addLbl.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
-	addLbl.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-      
-	row1.add(addLbl);
-	row1.add(addTxt);
-	row1.add(new JLabel(""));
-
-	addLbl=new JLabel("Port Number:  ");
-	addLbl.setBorder(new javax.swing.border.EmptyBorder(5,5,5,5));
-	addLbl.setFont(new Font("Comic Sans MS", Font.BOLD, 20));
-     row1.add(portTxt);
-	row1.add(addLbl);
-
-	topPanelPanel.add(row1);
-
-	*/
 
 
 
@@ -175,7 +141,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                             try {
                                 int close = holder.indexOf("}");
                                 holder = holder.substring((close+2),holder.length()-1);
-                                packetWriter.sendMessage(new Message(userMessage,holder,users));  //TODO server side for directed msgs
+                                packetWriter.sendMessage(new Message(userMessage,holder,users));
                             } catch (IOException e1) {
                                 e1.printStackTrace();
                             } }
@@ -207,7 +173,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
 
 
-                            JFileChooser fc = new JFileChooser();    //Todo limit file size - DONE
+                            JFileChooser fc = new JFileChooser();
                         int box = fc.showOpenDialog(null);
                         if ( box == JFileChooser.APPROVE_OPTION) {
                             File file = fc.getSelectedFile();
@@ -262,7 +228,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         
         
 	// The CenterPanel which is the chat room
-	txtArea = new JTextArea("Welcome to Let's Chat!\n", 10, 20); //TODO JEditorPane, random color  for each user
+	txtArea = new JTextArea("Welcome to Let's Chat!\n", 10, 20);
            /* {
 		Image image =new ImageIcon("/Users/winfredamazvidza/Desktop/chatProgram 2/src/main/java/com/group15/happy/Pictures/vintage.jpg").getImage();// imageIcon.getImage();
                 Image grayImage = GrayFilter.createDisabledImage(image);
@@ -330,7 +296,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                 clearButton.setEnabled(false);
                                 String hold = new String (username+" has left the chatroom");
                                 try {
-                                    packetWriter.sendMessage(new Message(userMessage,hold));  //TODO server side for directed msgs
+                                    packetWriter.sendMessage(new Message(userMessage,hold));
                                 } catch (IOException e1) {
                                     e1.printStackTrace();
                                 }
@@ -546,7 +512,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     public void onFileTransfer(FileTransfer transfer, byte[] data)
     {
         SwingUtilities.invokeLater(() -> {
-            JFileChooser chooser = new JFileChooser();//TODO jFilechooser save with extension
+            JFileChooser chooser = new JFileChooser();
             chooser.setSelectedFile(new File(transfer.getFilename()));
             String extentionBits[] = transfer.getFilename().split("\\.");
             FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("given file", extentionBits[extentionBits.length - 1]);
@@ -599,7 +565,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     public static void main(String[] args) throws IOException {
 
 
-       // GUI client = new GUI(new Socket("localhost", 1024));
+       // GUI client = new GUI(new Socket("localhost", 12050));
        JFrame OpenScreen = new JFrame("Chat Room: Log In");
         JButton login;
         JPanel upper = new JPanel();
@@ -643,8 +609,8 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                 OpenScreen.setVisible(false);
                 GUI client = null;
                 try {
-                   // client = new GUI(name,new Socket("localhost", 1024)); //TODO textbox for user to enter IP add for the server
-                    client = new GUI(name,new Socket(serverIPtxt.getText(), 1024)); //TODO textbox for user to enter IP add for the server
+                   // client = new GUI(name,new Socket("localhost", 12050));
+                    client = new GUI(name,new Socket(serverIPtxt.getText(), 12050));
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }

@@ -39,7 +39,7 @@ public class Server extends Thread
     {
         try
         {   copy = clientList;
-            ServerSocket socket = new ServerSocket(1024);
+            ServerSocket socket = new ServerSocket(12050);
             while (true)
             {
                 Socket connection = socket.accept();
