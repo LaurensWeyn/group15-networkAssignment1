@@ -28,6 +28,7 @@ public class Server extends Thread
             System.out.println("Cleaning up old file transfers...");
             for(File file : storageFolder.listFiles())
                 file.delete();
+            System.out.println("Transfer directory cleaned");
         }
         else
             storageFolder.mkdirs();
@@ -63,12 +64,27 @@ public class Server extends Thread
             client.sendMessage(msg);
         }
     }
+
     public void broadcast(FileTransfer msg)
     {
         //broadcasting message to all clients
         for (ClientHandler client:clientList) {
-            System.out.println("broadcast file to " + client);
             client.sendMessage(msg);
+        }
+    }
+
+    public void sendTo(String[] userList, Message msg)
+    {
+        for(String user:userList)//for every user that needs this message
+        {
+            for(ClientHandler client:clientList)//for every client that could be a relevant user
+            {
+                if(client.getUsername().equalsIgnoreCase(user))//if it matches
+                {
+                    client.sendMessage(msg);//send them the message
+                    break;//and move to the next username
+                }
+            }
         }
     }
 
@@ -79,7 +95,6 @@ public class Server extends Thread
         fileDB.add(fileTransfer);//add file info to database
         Files.write(fileTransfer.getFile().toPath(), data);//store data in filesystem
         broadcast(fileTransfer);//announce to clients file is available
-        System.out.println(fileTransfer + " stored and announced");
     }
 
     public FileTransfer getFile(int id)
