@@ -11,6 +11,7 @@ import com.group15.messageapi.PacketReader;
 import com.group15.messageapi.PacketWriter;
 import com.group15.messageapi.objects.FileTransfer;
 import com.group15.messageapi.objects.Message;
+import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
 import javafx.stage.FileChooser;
 
 import java.awt.image.BufferedImage;
@@ -20,6 +21,7 @@ import javax.imageio.stream.ImageInputStream;
 import javax.swing.JFileChooser;
 import javax.swing.*;
 import javax.swing.border.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.FileReader;
@@ -342,6 +344,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
                                 dispose();
                             }
+
                             else {
                                  System.out.println("No Option");
                                  }
@@ -544,7 +547,11 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     {
         SwingUtilities.invokeLater(() -> {
             JFileChooser chooser = new JFileChooser();//TODO jFilechooser save with extension
+            chooser.setSelectedFile(new File(transfer.getFilename()));
+            String extentionBits[] = transfer.getFilename().split("\\.");
+            FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("given file", extentionBits[extentionBits.length - 1]);
             chooser.setDialogTitle("Save file from " + transfer.getUsername());
+            chooser.setFileFilter(extensionFilter);
 
             chooser.showSaveDialog(null);
             File chosen = chooser.getSelectedFile();
