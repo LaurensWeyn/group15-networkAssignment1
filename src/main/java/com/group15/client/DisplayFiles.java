@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
-import static com.sun.tools.doclint.Entity.le;
 
 /**
  * Collection is a hashtable with all the usernames and the files which they uploaded, the file's "paths"

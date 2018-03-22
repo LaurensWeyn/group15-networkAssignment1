@@ -11,29 +11,20 @@ import com.group15.messageapi.PacketReader;
 import com.group15.messageapi.PacketWriter;
 import com.group15.messageapi.objects.FileTransfer;
 import com.group15.messageapi.objects.Message;
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
-import javafx.stage.FileChooser;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import javax.swing.JFileChooser;
 import javax.swing.*;
-import javax.swing.border.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.*;
-import java.io.FileReader;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import static com.group15.messageapi.objects.Message.MsgType.serverMessage;
-import static com.group15.messageapi.objects.Message.MsgType.userAction;
 import static com.group15.messageapi.objects.Message.MsgType.userMessage;
 import static java.awt.Color.black;
 import static java.awt.Color.orange;
@@ -185,7 +176,6 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                             else{
                                 //txtArea.append("File " + file.getName() + " sent successfully! " +"\n");
                                 FileTransfer w = new FileTransfer(file, username);
-                                df.sendFile(w);
                                 try {
                                     packetWriter.transferFile(w);
                                 } catch (IOException e1) {
