@@ -465,8 +465,8 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 * */
     public static void main(String[] args) throws IOException {
 
-        /*setting up gui*/
-       JFrame OpenScreen = new JFrame("Chat Room: Log In");
+        System.out.println("Setting up GUI");
+        JFrame OpenScreen = new JFrame("Chat Room: Log In");
         JButton login;
         JPanel upper = new JPanel();
         JPanel middle = new JPanel();

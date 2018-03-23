@@ -108,5 +108,6 @@ public class Server extends Thread
     public static void main(String[] args)
     {
         new Server(new File("sharedFiles")).start();
+        System.out.println("Main server thread started");
     }
 }
