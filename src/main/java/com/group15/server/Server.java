@@ -9,11 +9,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Server extends Thread
 {
-    ArrayList<ClientHandler> clientList = new ArrayList<>();
-    public static ArrayList<ClientHandler> copy = new ArrayList<>();
+    List<ClientHandler> clientList = Collections.synchronizedList(new ArrayList<>());
     private File storageFolder;
     private ArrayList<FileTransfer> fileDB = new ArrayList<>();
 
@@ -38,7 +39,7 @@ public class Server extends Thread
     public void run()
     {
         try
-        {   copy = clientList;
+        {
             ServerSocket socket = new ServerSocket(12050);
             while (true)
             {
@@ -52,7 +53,7 @@ public class Server extends Thread
         }
     }
 
-    public ArrayList<ClientHandler> getClientList()
+    public List<ClientHandler> getClientList()
     {
         return clientList;
     }

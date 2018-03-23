@@ -1,7 +1,8 @@
 Made by:
-Laurens Weyn WYNLAU003
-TODO
-TODO
+Group 15
+Laurens Weyn       WYNLAU003
+Winfreda Mazvidza  MZVWIN001
+Fatimah Dhalla     DHLFAT001
 
 This project is based on Maven. For tutors who don't know what that is,
 it's basically makefiles if makefiles were actually good. It's the industry standard for automated

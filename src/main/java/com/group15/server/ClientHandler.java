@@ -122,29 +122,32 @@ public class ClientHandler implements MessageListener
 
 
         for (ClientHandler check: parentServer.clientList)
+            if (check.username.equalsIgnoreCase(username))
+                found++;
+
+
+        if (found == 1)
         {
-            if (check.username.equals(username)){ found++;}
-
-        }
-
-
-        if (found == 1) {
-            try {
+            try
+            {
                 packetWriter.sendNack("Username is taken, please try again");
-            } catch (IOException e) {
+            } catch (IOException e)
+            {
                 e.printStackTrace();
 
-            }}
-            else{
-        try
+            }
+        } else
         {
-            packetWriter.sendAck();
-            parentServer.clientList.add(this);
-            parentServer.broadcast(new Message(Message.MsgType.serverMessage, username + " has joined the chatroom!"));
-        } catch (IOException e)
-        {
-            e.printStackTrace();
-        }}
+            try
+            {
+                packetWriter.sendAck();
+                parentServer.clientList.add(this);
+                parentServer.broadcast(new Message(Message.MsgType.serverMessage, username + " has joined the chatroom!"));
+            } catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

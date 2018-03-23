@@ -42,7 +42,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
 
 
     /*Constructor*/
-    GUI(String name, Socket socket)
+    private GUI(String name, Socket socket)
 	{
         super("Chat Room");
         try
@@ -391,7 +391,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     @Override
     public void onFileTransferAvailable(FileTransfer fileTransfer)
     {
-        df.sendFile(fileTransfer);
+        df.addFile(fileTransfer);
         /*announce new file to UI*/
         onMessage(new Message(Message.MsgType.serverMessage, fileTransfer + " is now available", "", fileTransfer.getTimestamp()));
     }

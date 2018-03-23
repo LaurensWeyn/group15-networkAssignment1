@@ -14,23 +14,17 @@ import java.util.Map;
 
 
 /**
- * Collection is a hashtable with all the usernames and the files which they uploaded, the file's "paths"
- * this way you can actually upload from the computer.
+ * UI for displaying files available for download
  */
-
-
-
 public class DisplayFiles extends JFrame {
 
 
-    JPanel jPanel = new JPanel();
-    JPanel lower = new JPanel();
-    JButton Exit;
-    JButton DownloadButton;
-    String heading[] = { "List of images available for download" };
-    DefaultListModel model = new DefaultListModel();
-    JList jlst = new JList(model);
-    Map<String, File> collection = new HashMap<String, File>();
+    private JPanel jPanel = new JPanel();
+    private JPanel lower = new JPanel();
+    private JButton Exit;
+    private JButton DownloadButton;
+    private DefaultListModel model = new DefaultListModel();
+    private JList jlst = new JList(model);
 
 
     /*
@@ -94,15 +88,12 @@ public class DisplayFiles extends JFrame {
     /*
      sends a file to the rest of the users in the chat
      */
-    public void sendFile(FileTransfer file){
-
-        //String path = file.getAbsolutePath();
-        //String name = file.getName();
+    public void addFile(FileTransfer file){
 
         int pos = jlst.getModel().getSize();
         model.add(pos, file);
 
-        jPanel.revalidate(); //ADD THIS AS WELL
+        jPanel.revalidate();
         jPanel.repaint();
 
     }
