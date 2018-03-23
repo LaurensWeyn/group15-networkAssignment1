@@ -4,7 +4,6 @@ import com.group15.messageapi.objects.FileTransfer;
 import com.group15.messageapi.objects.Message;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * A listener for chat messages.

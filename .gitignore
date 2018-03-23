@@ -1,1 +1,5 @@
 /target/
+/sharedFiles/
+.DS_Store
+.idea/workspace.xml
+src/main/resources/

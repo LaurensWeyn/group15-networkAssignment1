@@ -22,10 +22,6 @@ import java.net.Socket;
 import java.nio.file.Files;
 import java.util.ArrayList;
 
-import static com.group15.messageapi.objects.Message.MsgType.serverMessage;
-import static com.group15.messageapi.objects.Message.MsgType.userMessage;
-import static java.awt.Color.black;
-import static java.awt.Color.orange;
 
 public class GUI extends JFrame implements ActionListener, MessageListener {
 
@@ -117,13 +113,13 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                             try { /*If private message use contructor with users*/
                                 int close = holder.indexOf("}");
                                 holder = holder.substring((close+2),holder.length()-1);
-                                packetWriter.sendMessage(new Message(userMessage,holder,users));
+                                packetWriter.sendMessage(new Message(Message.MsgType.userMessage, holder,users));
                             } catch (IOException e1) {
                                 e1.printStackTrace();
                             } }
                         else{
                             try {/*If public message use contsructor which sends to all users*/
-                                packetWriter.sendMessage(new Message(userMessage,holder));
+                                packetWriter.sendMessage(new Message(Message.MsgType.userMessage, holder));
                             } catch (IOException e1) {
                                 e1.printStackTrace();
                             }
@@ -242,7 +238,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
                                 clearButton.setEnabled(false);
                                 String hold = new String (username+" has left the chatroom");
                                 try {
-                                    packetWriter.sendMessage(new Message(userMessage,hold)); /*tell server to boradcast the user is leaving the chatroom*/
+                                    packetWriter.sendMessage(new Message(Message.MsgType.userMessage, hold)); /*tell server to boradcast the user is leaving the chatroom*/
                                 } catch (IOException e1) {
                                     e1.printStackTrace();
                                 }
@@ -397,7 +393,7 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
     {
         df.sendFile(fileTransfer);
         /*announce new file to UI*/
-        onMessage(new Message(serverMessage, fileTransfer + " is now available", "", fileTransfer.getTimestamp()));
+        onMessage(new Message(Message.MsgType.serverMessage, fileTransfer + " is now available", "", fileTransfer.getTimestamp()));
     }
 
     @Override
@@ -527,9 +523,9 @@ public class GUI extends JFrame implements ActionListener, MessageListener {
         middle.add(userNamelbl);
         middle.add(userNametxt);
         lower.add(login);
-        lower.setBackground(orange);
-        middle.setBackground(orange);
-        upper.setBackground(black);
+        lower.setBackground(Color.orange);
+        middle.setBackground(Color.orange);
+        upper.setBackground(Color.black);
         OpenScreen.setPreferredSize(new Dimension(600, 300));
         OpenScreen.pack();
         OpenScreen.setLocationRelativeTo(null);

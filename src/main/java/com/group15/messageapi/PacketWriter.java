@@ -2,7 +2,6 @@ package com.group15.messageapi;
 
 import com.group15.messageapi.objects.FileTransfer;
 import com.group15.messageapi.objects.Message;
-import com.group15.server.Server;
 import com.laurens.hexcmd.write.HexCmdTransmitter;
 
 import java.io.IOException;

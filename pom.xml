@@ -23,7 +23,7 @@
                         <archive>
                             <manifest>
                                 <addClasspath>true</addClasspath>
-                                <mainClass>com.spark.server.tsunderechan.Main</mainClass>
+                                <mainClass>com.group15.client.GUI</mainClass>
                             </manifest>
                         </archive>
                     </configuration>
@@ -38,7 +38,7 @@
                         </descriptorRefs>
                         <archive>
                             <manifest>
-                                <mainClass>com.spark.server.tsunderechan.Main</mainClass>
+                                <mainClass>com.group15.client.GUI</mainClass>
                             </manifest>
                         </archive>
                     </configuration>

@@ -1,6 +1,5 @@
 package com.group15.server;
 
-import com.group15.client.GUI;
 import com.group15.messageapi.MessageListener;
 import com.group15.messageapi.PacketReader;
 import com.group15.messageapi.PacketWriter;
@@ -11,8 +10,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import static com.group15.messageapi.objects.Message.MsgType.serverMessage;
-import static com.group15.messageapi.objects.Message.MsgType.userMessage;
 
 public class ClientHandler implements MessageListener
 {
@@ -214,7 +211,7 @@ public class ClientHandler implements MessageListener
 
         parentServer.getClientList().remove(this);
         try {
-            packetWriter.sendMessage(new Message(serverMessage,username + " left the chatroom\n" ));
+            packetWriter.sendMessage(new Message(Message.MsgType.serverMessage, username + " left the chatroom\n" ));
         } catch (IOException e) {
             e.printStackTrace();
         }
