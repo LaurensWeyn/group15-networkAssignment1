@@ -34,6 +34,10 @@ public class DisplayFiles extends JFrame {
     Map<String, File> collection = new HashMap<String, File>();
 
 
+    /*
+    Displays a list of files available for download sent by other chat users
+    Also allows you to download the specific file from the list into your computer
+     */
     public DisplayFiles(PacketWriter packetWriter) throws HeadlessException {
 
         setVisible(false);
@@ -57,44 +61,47 @@ public class DisplayFiles extends JFrame {
 
 
         Exit = new JButton("Hide list");
-        Exit.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        Exit.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e){
                 setVisible(false);
             }
+
         });
 
         DownloadButton = new JButton("Download");
-        DownloadButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            {
+        DownloadButton.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+
                 FileTransfer fileTransfer = (FileTransfer)jlst.getSelectedValue();
                 try {
                     packetWriter.requestFileTransfer(fileTransfer);
-                } catch (IOException e1) {
+                }
+                catch (IOException e1) {
                     e1.printStackTrace();
                 }
 
             }
+
         });
 
         lower.add(DownloadButton);
-    lower.add(Exit);
-
+        lower.add(Exit);
 
     }
 
+
+    /*
+     sends a file to the rest of the users in the chat
+     */
     public void sendFile(FileTransfer file){
 
-       // String path = file.getAbsolutePath();
+        //String path = file.getAbsolutePath();
         //String name = file.getName();
 
         int pos = jlst.getModel().getSize();
         model.add(pos, file);
-
-
 
         jPanel.revalidate(); //ADD THIS AS WELL
         jPanel.repaint();
